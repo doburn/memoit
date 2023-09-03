@@ -50,9 +50,6 @@ public class User extends BaseEntity {
 	@Column(name = "role", nullable = false)
 	private Role role;
 
-	@OneToMany(mappedBy = "user")
-	private final List<Memo> memos = new ArrayList<>();
-
 	public User(String email, String password, Platform platform, Role role) {
 		this.email = email;
 		this.password = password;
@@ -68,9 +65,5 @@ public class User extends BaseEntity {
 
 	public void activate() {
 		this.status = ACTIVE;
-	}
-
-	public void addMemo(Memo memo) {
-		this.memos.add(memo);
 	}
 }
