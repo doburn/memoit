@@ -51,4 +51,7 @@ public class User extends BaseEntity {
 	@OneToMany(mappedBy = "user")
 	private final List<Memo> memos = new ArrayList<>();
 
+	public void addMemo(Memo memo) {
+		this.memos.add(memo);
+	}
 }

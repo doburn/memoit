@@ -32,4 +32,11 @@ public class Memo extends BaseEntity {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
+	public Memo(String title, String content, User user) {
+		this.title = title;
+		this.content = content;
+
+		this.user = user;
+		user.addMemo(this);
+	}
 }
