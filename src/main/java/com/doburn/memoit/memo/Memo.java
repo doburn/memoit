@@ -44,4 +44,10 @@ public class Memo extends BaseEntity {
 		this.user = user;
 		user.addMemo(this);
 	}
+
+	public void update(String title, String content) {
+		this.title = title;
+		this.content = content;
+	}
+
 }
