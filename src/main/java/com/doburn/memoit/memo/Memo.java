@@ -1,5 +1,6 @@
 package com.doburn.memoit.memo;
 
+import com.doburn.memoit.global.BaseEntity;
 import com.doburn.memoit.user.User;
 
 import jakarta.persistence.Column;
@@ -14,7 +15,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "memos")
-public class Memo {
+public class Memo extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

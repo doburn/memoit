@@ -3,6 +3,7 @@ package com.doburn.memoit.user;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.doburn.memoit.global.BaseEntity;
 import com.doburn.memoit.memo.Memo;
 
 import jakarta.persistence.Column;
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class User {
+public class User extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
