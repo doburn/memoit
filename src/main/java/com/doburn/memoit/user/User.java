@@ -1,5 +1,7 @@
 package com.doburn.memoit.user;
 
+import static com.doburn.memoit.user.Status.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +59,15 @@ public class User extends BaseEntity {
 		this.platform = platform;
 		this.role = role;
 
-		this.status = Status.ACTIVE;
+		this.status = ACTIVE;
 	}
+
+	private void resign() {
+		this.status = RESIGN;
+	}
+
+	private void activate() {
+		this.status = ACTIVE;
+	}
+
 }
