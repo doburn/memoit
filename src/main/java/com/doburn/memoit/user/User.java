@@ -62,11 +62,11 @@ public class User extends BaseEntity {
 		this.status = ACTIVE;
 	}
 
-	private void resign() {
+	public void resign() {
 		this.status = RESIGN;
 	}
 
-	private void activate() {
+	public void activate() {
 		this.status = ACTIVE;
 	}
 
