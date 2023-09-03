@@ -12,9 +12,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "memos")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Memo extends BaseEntity {
 
 	@Id
