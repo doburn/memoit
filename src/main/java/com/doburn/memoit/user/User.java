@@ -51,4 +51,12 @@ public class User extends BaseEntity {
 	@OneToMany(mappedBy = "user")
 	private final List<Memo> memos = new ArrayList<>();
 
+	public User(String email, String password, Platform platform, Role role) {
+		this.email = email;
+		this.password = password;
+		this.platform = platform;
+		this.role = role;
+
+		this.status = Status.ACTIVE;
+	}
 }
