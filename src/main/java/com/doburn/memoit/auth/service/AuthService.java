@@ -34,10 +34,43 @@ public class AuthService {
 	@Transactional
 	public AuthTokenResponse generateAccessAndRefreshToken(String tokenEndpointUri, AuthTokenRequest authTokenRequest) {
 		// 1. 사용자가 전해준 code로 google에서 토큰 응답을 받는다
-		//		에러가 나지 않았으면, google 인증 성공
+		// 	에러가 나지 않았으면, google 인증 성공
 		GoogleTokenResponse googleToken = getGoogleAuthTokenByPost(tokenEndpointUri, authTokenRequest);
 
+		// 2. id_token을 까서 사용자의 이메일을 꺼내온다
+		String loginEmail = getEmailFromIdToken(googleToken.getId_token());
+
+		// 3. 자체적으로 리프레시 토큰, 액세스 토큰 생성
+
+		// 4. 리프레시 토큰을 회원과 함께 DB에 저장
+
+		// 5. 클라이언트에게 리프레시 토큰 + 액세스 토큰 응답
+
 		return new AuthTokenResponse("액세스 토큰", "리프레시 토큰");
+	}
+
+	/**
+	 * Google Token Response의 ID_TOKEN에서 사용자 식별 정보(이메일)을 받아온다.
+	 */
+	private String getEmailFromIdToken(String idToken) {
+		String[] splitIdToken = idToken.split("\\.");
+
+		byte[] payload = Base64.getDecoder().decode(splitIdToken[1]); // get payload from jwt
+
+		String payloadString = new String(payload);
+		String email;
+
+		try {
+			Map<String, String> map = objectMapper.readValue(payloadString, Map.class);
+			email = map.get("email");
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+
+		if (email == null)
+			throw new IllegalStateException("Google 이메일 정보가 없습니다.");
+
+		return email;
 	}
 
 	/**
