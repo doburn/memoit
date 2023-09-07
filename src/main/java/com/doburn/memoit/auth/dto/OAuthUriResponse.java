@@ -1,4 +1,4 @@
-package com.doburn.memoit.auth.controller.dto;
+package com.doburn.memoit.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
