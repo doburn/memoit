@@ -1,6 +1,5 @@
-package com.doburn.memoit.global.uri;
+package com.doburn.memoit.auth;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.doburn.memoit.global.properties.GoogleProperties;
@@ -20,6 +19,10 @@ public class UriGenerator {
 			+ "&" + "response_type=code"
 			+ "&" + "scope=" + googleProperties.getScope()
 			+ "&" + "access_type=" + googleProperties.getAccessType();
+	}
+
+	public String generateTokenUri() {
+		return googleProperties.getTokenEndPoint();
 	}
 
 }
