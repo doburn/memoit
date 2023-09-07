@@ -14,10 +14,14 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.doburn.memoit.auth.TokenGenerator;
 import com.doburn.memoit.auth.dto.AuthTokenRequest;
 import com.doburn.memoit.auth.dto.AuthTokenResponse;
 import com.doburn.memoit.auth.dto.GoogleTokenResponse;
 import com.doburn.memoit.global.properties.GoogleProperties;
+import com.doburn.memoit.user.Platform;
+import com.doburn.memoit.user.Role;
+import com.doburn.memoit.user.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,6 +34,7 @@ public class AuthService {
 
 	private final GoogleProperties googleProperties;
 	private final ObjectMapper objectMapper;
+	private final TokenGenerator tokenGenerator;
 
 	@Transactional
 	public AuthTokenResponse generateAccessAndRefreshToken(String tokenEndpointUri, AuthTokenRequest authTokenRequest) {
@@ -39,14 +44,22 @@ public class AuthService {
 
 		// 2. id_token을 까서 사용자의 이메일을 꺼내온다
 		String loginEmail = getEmailFromIdToken(googleToken.getId_token());
+		// 2-1. 해당 이메일을 사용하는 사용자가 DB에 존재하는지 체크한다.
+		//			만약 사용자가 DB에 없으면, DB에 새로 저장한다.
+		// 2-2. 유저 리포지토리에서 가져온 해당 이메일의 유저 객체를 들고있는다.
+		User loginUser = new User(loginEmail, "pwd", Platform.GOOGLE, Role.USER);
 
-		// 3. 자체적으로 리프레시 토큰, 액세스 토큰 생성
+		// 3. 사용자의 정보(id) 를 이용하여 토큰을 만든다
+		// 		리프레시 토큰, 액세스 토큰을 생성한다.
+		String refreshToken = tokenGenerator.generateRefreshToken(loginUser.getId().toString());
+		String accessToken = tokenGenerator.generateAccessToken(loginUser.getId().toString());
 
-		// 4. 리프레시 토큰을 회원과 함께 DB에 저장
+		// 4. auth 테이블에 해당 사용자의 정보(id)를 가진 엔티티가 있으면 refresh token만 업데이트
+		//		존재하지 않는 경우 auth 테이블에 사용자 엔티티를 추가해준다
 
-		// 5. 클라이언트에게 리프레시 토큰 + 액세스 토큰 응답
 
-		return new AuthTokenResponse("액세스 토큰", "리프레시 토큰");
+		// 5. 클라이언트에게 리프레시 토큰 + 액세스 토큰을 응답한다.
+		return new AuthTokenResponse(accessToken, refreshToken);
 	}
 
 	/**
