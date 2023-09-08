@@ -14,7 +14,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	default User getUserByEmail(String email) {
 		return findUserByEmail(email)
-			.orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+	}
+
+	default void validateExistsById(Long id) {
+		if(!existsById(id)) {
+			throw new RuntimeException("존재하지 않는 회원입니다.");
+		}
 	}
 
 }
