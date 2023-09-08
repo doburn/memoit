@@ -2,11 +2,7 @@ package com.doburn.memoit.user;
 
 import static com.doburn.memoit.user.Status.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.doburn.memoit.global.BaseEntity;
-import com.doburn.memoit.memo.Memo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +11,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -35,9 +30,6 @@ public class User extends BaseEntity {
 	@Column(name = "email", unique = true, nullable = false)
 	private String email;
 
-	@Column(name = "password", nullable = false)
-	private String password;
-
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	private Status status;
@@ -46,15 +38,9 @@ public class User extends BaseEntity {
 	@Column(name = "platform", nullable = false)
 	private Platform platform;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "role", nullable = false)
-	private Role role;
-
-	public User(String email, String password, Platform platform, Role role) {
+	public User(String email, Platform platform) {
 		this.email = email;
-		this.password = password;
 		this.platform = platform;
-		this.role = role;
 
 		this.status = ACTIVE;
 	}
