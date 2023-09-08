@@ -8,4 +8,6 @@ import com.doburn.memoit.user.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
+	boolean existsByEmail(String email);
+
 }
