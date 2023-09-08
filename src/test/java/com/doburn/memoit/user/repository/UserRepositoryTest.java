@@ -62,4 +62,16 @@ class UserRepositoryTest {
 			.isInstanceOf(RuntimeException.class);
 	}
 
+	@DisplayName("비활성화 id면 예외를 던진다.")
+	@Test
+	void 비활성화_id면_예외를_던진다() {
+	    // given
+		User user = 세욱();
+		user.resign();
+		User savedUser = userRepository.save(user);
+
+		// when & then
+		assertThatThrownBy(() -> userRepository.validateStatusById(user.getId()))
+			.isInstanceOf(RuntimeException.class);
+	}
 }
