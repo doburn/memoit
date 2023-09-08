@@ -2,6 +2,7 @@ package com.doburn.memoit.user.dto.response;
 
 import com.doburn.memoit.user.Platform;
 import com.doburn.memoit.user.Status;
+import com.doburn.memoit.user.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,4 +18,10 @@ public class UserResponse {
 	private Status status;
 	private Platform platform;
 
+	public UserResponse(User user) {
+		this.id = user.getId();
+		this.email = user.getEmail();
+		this.status = user.getStatus();
+		this.platform = user.getPlatform();
+	}
 }
