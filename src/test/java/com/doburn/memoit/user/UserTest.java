@@ -14,7 +14,7 @@ class UserTest {
 	@Test
 	@DisplayName("회원을 생성한다.")
 	void 회원을_생성한다() {
-		assertDoesNotThrow(() -> new User(지호_이메일, MEMOIT));
+		assertDoesNotThrow(() -> new User(지호_이메일, GOOGLE));
 	}
 
 	@Test
