@@ -46,7 +46,7 @@ public class AuthService {
 		// 2-1. 해당 이메일을 사용하는 사용자가 DB에 존재하는지 체크한다.
 		//			만약 사용자가 DB에 없으면, DB에 새로 저장한다.
 		// 2-2. 유저 리포지토리에서 가져온 해당 이메일의 유저 객체를 들고있는다.
-		User loginUser = new User(loginEmail, "pwd", Platform.GOOGLE, Role.USER);
+		User loginUser = new User(loginEmail, Platform.GOOGLE);
 
 		// 3. 사용자의 정보(id) 를 이용하여 토큰을 만든다
 		// 		리프레시 토큰, 액세스 토큰을 생성한다.
@@ -55,7 +55,6 @@ public class AuthService {
 
 		// 4. auth 테이블에 해당 사용자의 정보(id)를 가진 엔티티가 있으면 refresh token만 업데이트
 		//		존재하지 않는 경우 auth 테이블에 사용자 엔티티를 추가해준다
-
 
 		// 5. 클라이언트에게 리프레시 토큰 + 액세스 토큰을 응답한다.
 		return new AuthTokenResponse(accessToken, refreshToken);
