@@ -36,9 +36,9 @@ public class AuthToken extends BaseEntity {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	public AuthToken(String refreshToken, User user) {
-		this.refreshToken = refreshToken;
+	public AuthToken(User user, String refreshToken) {
 		this.user = user;
+		this.refreshToken = refreshToken;
 	}
 
 	public void change(String refreshToken) {
