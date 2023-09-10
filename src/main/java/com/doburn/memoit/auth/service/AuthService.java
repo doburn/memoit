@@ -20,7 +20,6 @@ import com.doburn.memoit.auth.dto.AuthTokenResponse;
 import com.doburn.memoit.auth.dto.GoogleTokenResponse;
 import com.doburn.memoit.global.properties.GoogleProperties;
 import com.doburn.memoit.user.Platform;
-import com.doburn.memoit.user.Role;
 import com.doburn.memoit.user.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
