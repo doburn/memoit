@@ -1,5 +1,7 @@
 package com.doburn.memoit.auth;
 
+import org.springframework.util.StringUtils;
+
 import com.doburn.memoit.global.BaseEntity;
 import com.doburn.memoit.user.User;
 
@@ -33,5 +35,11 @@ public class AuthToken extends BaseEntity {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
+
+	public void change(String refreshToken) {
+		if(StringUtils.hasText(refreshToken)) {
+			this.refreshToken = refreshToken;
+		}
+	}
 
 }
