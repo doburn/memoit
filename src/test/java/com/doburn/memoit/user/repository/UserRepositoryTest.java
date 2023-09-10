@@ -65,7 +65,7 @@ class UserRepositoryTest {
 	@DisplayName("비활성화 id면 예외를 던진다.")
 	@Test
 	void 비활성화_id면_예외를_던진다() {
-	    // given
+		// given
 		User user = 세욱();
 		user.resign();
 		User savedUser = userRepository.save(user);
