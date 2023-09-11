@@ -12,9 +12,9 @@ public interface AuthRepository extends JpaRepository<AuthToken, Long> {
 
 	Optional<AuthToken> findAuthTokenByUserId(Long userId);
 
-	default AuthToken getByUserId(Long userId) {
+	default AuthToken getAuthTokenByUserId(Long userId) {
 		return findAuthTokenByUserId(userId)
-			.orElseThrow(() -> new RuntimeException());
+			.orElseThrow(RuntimeException::new);
 	}
 
 }
