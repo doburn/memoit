@@ -1,5 +1,7 @@
 package com.doburn.memoit.auth.service;
 
+import static com.doburn.memoit.user.Platform.*;
+
 import java.util.Base64;
 import java.util.Map;
 
@@ -14,13 +16,15 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.doburn.memoit.auth.AuthToken;
 import com.doburn.memoit.auth.TokenGenerator;
 import com.doburn.memoit.auth.dto.AuthTokenRequest;
 import com.doburn.memoit.auth.dto.AuthTokenResponse;
 import com.doburn.memoit.auth.dto.GoogleTokenResponse;
+import com.doburn.memoit.auth.repository.AuthRepository;
 import com.doburn.memoit.global.properties.GoogleProperties;
-import com.doburn.memoit.user.Platform;
 import com.doburn.memoit.user.User;
+import com.doburn.memoit.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,6 +39,9 @@ public class AuthService {
 	private final ObjectMapper objectMapper;
 	private final TokenGenerator tokenGenerator;
 
+	private final UserRepository userRepository;
+	private final AuthRepository authRepository;
+
 	@Transactional
 	public AuthTokenResponse generateAccessAndRefreshToken(String tokenEndpointUri, AuthTokenRequest authTokenRequest) {
 		// 1. 사용자가 전해준 code로 google에서 토큰 응답을 받는다
@@ -45,8 +52,12 @@ public class AuthService {
 		String loginEmail = getEmailFromIdToken(googleToken.getId_token());
 		// 2-1. 해당 이메일을 사용하는 사용자가 DB에 존재하는지 체크한다.
 		//			만약 사용자가 DB에 없으면, DB에 새로 저장한다.
+		if (!userRepository.existsByEmail(loginEmail)) {
+			userRepository.save(new User(loginEmail, GOOGLE));
+		}
+
 		// 2-2. 유저 리포지토리에서 가져온 해당 이메일의 유저 객체를 들고있는다.
-		User loginUser = new User(loginEmail, Platform.GOOGLE);
+		User loginUser = userRepository.getUserByEmail(loginEmail);
 
 		// 3. 사용자의 정보(id) 를 이용하여 토큰을 만든다
 		// 		리프레시 토큰, 액세스 토큰을 생성한다.
@@ -55,6 +66,11 @@ public class AuthService {
 
 		// 4. auth 테이블에 해당 사용자의 정보(id)를 가진 엔티티가 있으면 refresh token만 업데이트
 		//		존재하지 않는 경우 auth 테이블에 사용자 엔티티를 추가해준다
+		if (!authRepository.existsByUserId(loginUser.getId())) {
+			authRepository.save(new AuthToken(loginUser, refreshToken));
+		} else {
+			authRepository.getAuthTokenByUserId(loginUser.getId()).change(refreshToken);
+		}
 
 		// 5. 클라이언트에게 리프레시 토큰 + 액세스 토큰을 응답한다.
 		return new AuthTokenResponse(accessToken, refreshToken);
@@ -103,12 +119,8 @@ public class AuthService {
 
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formData, headers);
 
-		ResponseEntity<String> response = restTemplate.exchange(
-			tokenEndpointUri,
-			HttpMethod.POST,
-			request,
-			String.class
-		);
+		ResponseEntity<String> response = restTemplate.exchange(tokenEndpointUri, HttpMethod.POST, request,
+			String.class);
 
 		try {
 			return objectMapper.readValue(response.getBody(), GoogleTokenResponse.class);
