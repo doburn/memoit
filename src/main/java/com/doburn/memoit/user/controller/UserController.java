@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.doburn.memoit.global.threadlocals.ThreadLocalValueHolder;
 import com.doburn.memoit.user.dto.request.LoginUser;
 import com.doburn.memoit.user.dto.response.UserResponse;
 import com.doburn.memoit.user.service.UserService;
@@ -21,14 +22,20 @@ public class UserController {
 
 	// LoginUser @AuthenticationPrincipal 로 변경
 	@GetMapping("/me")
-	public ResponseEntity<UserResponse> myinfo(LoginUser loginUser) {
+	public ResponseEntity<UserResponse> myinfo() {
+
+		LoginUser loginUser = new LoginUser(ThreadLocalValueHolder.getThreadLocalValue());
+
 		UserResponse response = userService.getUserInfo(loginUser.getId());
 		return ResponseEntity.ok(response);
 	}
 
 	// LoginUser @AuthenticationPrincipal 로 변경
 	@PatchMapping("/me")
-	public ResponseEntity<Void> update(LoginUser loginUser) {
+	public ResponseEntity<Void> update() {
+
+		LoginUser loginUser = new LoginUser(ThreadLocalValueHolder.getThreadLocalValue());
+
 		userService.changeStatus(loginUser.getId());
 		return ResponseEntity.noContent().build();
 	}
